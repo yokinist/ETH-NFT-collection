@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "hardhat/console.sol";
 
+// Base64.solコントラクトからSVGとJSONをBase64に変換する関数をインポートします。
+import { Base64 } from "./libraries/Base64.sol";
+
 // インポートした OpenZeppelin のコントラクトを継承しています。
 // 継承したコントラクトのメソッドにアクセスできるようになります。
 contract MyEpicNFT is ERC721URIStorage {
@@ -79,23 +82,51 @@ contract MyEpicNFT is ERC721URIStorage {
     string memory second = pickRandomSecondWord(newItemId);
     string memory third = pickRandomThirdWord(newItemId);
 
+    // 3つの単語を連携して格納する変数 combinedWord を定義します。
+    string memory combinedWord = string(abi.encodePacked(first, second, third));
+
     // 3つの単語を連結して、<text>タグと<svg>タグで閉じます。
     string memory finalSvg = string(abi.encodePacked(baseSvg, first, second, third, "</text></svg>"));
 
-	// NFTに出力されるテキストをターミナルに出力します。
+	  // NFTに出力されるテキストをターミナルに出力します。
     console.log("\n--------------------");
     console.log(finalSvg);
+    console.log("--------------------\n");
+
+    // JSONファイルを所定の位置に取得し、base64としてエンコードします。
+    string memory json = Base64.encode(
+        bytes(
+            string(
+                abi.encodePacked(
+                    '{"name": "',
+                    // NFTのタイトルを生成される言葉（例: GrandCuteBird）に設定します。
+                    combinedWord,
+                    '", "description": "A highly acclaimed collection of squares.", "image": "data:image/svg+xml;base64,',
+                    //  data:image/svg+xml;base64 を追加し、SVG を base64 でエンコードした結果を追加します。
+                    Base64.encode(bytes(finalSvg)),
+                    '"}'
+                )
+            )
+        )
+    );
+
+     // データの先頭に data:application/json;base64 を追加します。
+    string memory finalTokenUri = string(
+        abi.encodePacked("data:application/json;base64,", json)
+    );
+
+    console.log("\n----- Token URI ----");
+    console.log(finalTokenUri);
     console.log("--------------------\n");
 
     // msg.sender を使って NFT を送信者に Mint します。
     _safeMint(msg.sender, newItemId);
 
-    // tokenURI は後で設定します。
-    // 今は、tokenURI の代わりに、"We will set tokenURI later." を設定します。
-    _setTokenURI(newItemId, "We will set tokenURI later.");
+    // tokenURIを更新します。
+    _setTokenURI(newItemId, finalTokenUri);
 
-    // NFTがいつ誰に作成されたかを確認します。
-    console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+ 	  // NFTがいつ誰に作成されたかを確認します。
+	  console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
 
     // 次の NFT が Mint されるときのカウンターをインクリメントする。
     _tokenIds.increment();
