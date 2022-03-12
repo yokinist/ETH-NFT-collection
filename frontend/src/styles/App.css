@@ -106,6 +106,15 @@
   color: white;
 }
 
+.desc-container {
+  display: flex;
+  flex-flow: column;
+}
+
+.desc-text {
+  color: white;
+}
+
 /* KeyFrames */
 @-webkit-keyframes gradient-animation {
   0% {
