@@ -7,6 +7,7 @@ const RINKEBY_CHAIN_ID = "0x4";
 const CONTRACT_ADDRESS = "0x6D8030B8Dd0E53ACd18239d0b641FE2553C7491c";
 
 export const useApp = () => {
+  const [lastTokenId, setLastTokenId] = useState(0);
   const [currentAccount, setCurrentAccount] = useState("");
   const [currentChainId, setCurrentChainId] = useState("");
   const [isRinkebyTestNetwork, setRinkebyTestNetwork] = useState(false);
@@ -111,6 +112,7 @@ export const useApp = () => {
 
     // mint 後に emit された NewEpicNFTMinted から値を受け取る
     const handleEmitEvent = (from, tokenId) => {
+      setLastTokenId(tokenId.toNumber());
       console.log(from, tokenId.toNumber());
       alert(
         `あなたのウォレットに NFT を送信しました。OpenSea に表示されるまで最大で10分かかることがあります。NFT へのリンクはこちらです: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
@@ -121,6 +123,7 @@ export const useApp = () => {
   }, [currentAccount]);
 
   return {
+    lastTokenId,
     isRinkebyTestNetwork,
     currentAccount,
     connectWallet,

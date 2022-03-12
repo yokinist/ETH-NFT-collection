@@ -5,9 +5,11 @@ import { useApp } from "./hooks/useApp";
 
 const TWITTER_HANDLE = "yokinist";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
+const MINT_LIMIT_COUNT = 100;
 
 const App = () => {
   const {
+    lastTokenId,
     isRinkebyTestNetwork,
     connectWallet,
     currentAccount,
@@ -42,6 +44,7 @@ const App = () => {
             </p>
           )}
         </div>
+        <p className="sub-text">{`${lastTokenId}/${MINT_LIMIT_COUNT}`}</p>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
           <a
