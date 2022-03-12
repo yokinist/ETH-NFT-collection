@@ -7,24 +7,37 @@ const TWITTER_HANDLE = "yokinist";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
-  const { currentAccount, askContractToMintNft } = useApp();
+  const {
+    isNoRinkebyTestNetwork,
+    connectWallet,
+    currentAccount,
+    askContractToMintNft,
+  } = useApp();
   return (
     <div className="App">
       <div className="container">
         <div className="header-container">
           <p className="header gradient-text">My NFT Collection</p>
           <p className="sub-text">あなただけの特別な NFT を Mint しよう💫</p>
-          {currentAccount === "" ? (
-            <button className="cta-button connect-wallet-button">
+          {currentAccount === "" && !isNoRinkebyTestNetwork && (
+            <button
+              onClick={connectWallet}
+              className="cta-button connect-wallet-button"
+            >
               Connect to Wallet
             </button>
-          ) : (
+          )}
+          {currentAccount !== "" && isNoRinkebyTestNetwork ? (
             <button
               onClick={askContractToMintNft}
               className="cta-button connect-wallet-button"
             >
               Mint NFT
             </button>
+          ) : (
+            <p className="sub-text">
+              Rinkeby Test Network に切り替えてください
+            </p>
           )}
         </div>
         <div className="footer-container">

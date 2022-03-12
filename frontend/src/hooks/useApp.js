@@ -2,44 +2,22 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MyEpicNftABI } from "../libs";
 
-const CONTRACT_ADDRESS = " 0xc613C5EC4AeAF3028B015D6A98dA491fD80593B2";
+const RINKEBY_CHAIN_ID = "0x4";
+// NOTE: contract デプロイ毎に更新させる
+const CONTRACT_ADDRESS = "0x6D8030B8Dd0E53ACd18239d0b641FE2553C7491c";
 
 export const useApp = () => {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [isNoRinkebyTestNetwork, setRinkebyTestNetwork] = useState(true);
 
-  const setupEventListener = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        // NFT が発行されます。
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          MyEpicNftABI.abi,
-          signer
-        );
-
-        // Event が　emit される際に、コントラクトから送信される情報を受け取っています。
-        connectedContract.on("NewEpicNFTMinted", (from, tokenId) => {
-          console.log(from, tokenId.toNumber());
-          alert(
-            `あなたのウォレットに NFT を送信しました。OpenSea に表示されるまで最大で10分かかることがあります。NFT へのリンクはこちらです: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
-          );
-        });
-
-        console.log("Setup event listener!");
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  console.log("currentAccount: ", currentAccount);
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
+    const chainId = await ethereum.request({ method: "eth_chainId" });
+    const isRinkByChainId = chainId === RINKEBY_CHAIN_ID;
+    if (!isRinkByChainId) return;
+    setRinkebyTestNetwork(isRinkByChainId);
     if (!ethereum) {
       console.log("Make sure you have MetaMask!");
       return;
@@ -52,7 +30,6 @@ export const useApp = () => {
       const account = accounts[0];
       console.log("Found an authorized account:", account);
       setCurrentAccount(account);
-      setupEventListener();
     } else {
       console.log("No authorized account found");
     }
@@ -66,18 +43,13 @@ export const useApp = () => {
         alert("Get MetaMask!");
         return;
       }
-      // ウォレットアドレスに対してアクセスをリクエストしています。
+      // ウォレットアドレスに対してアクセスをリクエスト
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
 
       console.log("Connected", accounts[0]);
-
-      // ウォレットアドレスを currentAccount に紐付けます。
       setCurrentAccount(accounts[0]);
-
-      // **** イベントリスナーをここで設定 ****
-      setupEventListener();
     } catch (error) {
       console.log(error);
     }
@@ -98,7 +70,7 @@ export const useApp = () => {
         let nftTxn = await connectedContract.makeAnEpicNFT();
         console.log("Mining...please wait.");
         await nftTxn.wait();
-
+        console.log(nftTxn);
         console.log(
           `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
         );
@@ -115,7 +87,33 @@ export const useApp = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const { ethereum } = window;
+    if (!ethereum || !currentAccount) return;
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const connectedContract = new ethers.Contract(
+      CONTRACT_ADDRESS,
+      MyEpicNftABI.abi,
+      signer
+    );
+
+    if (!connectedContract) return;
+
+    // mint 後に emit された NewEpicNFTMinted から値を受け取る
+    const handleEmitEvent = (from, tokenId) => {
+      console.log(from, tokenId.toNumber());
+      alert(
+        `あなたのウォレットに NFT を送信しました。OpenSea に表示されるまで最大で10分かかることがあります。NFT へのリンクはこちらです: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
+      );
+    };
+    connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
+    return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
+  }, [currentAccount]);
+
   return {
+    isNoRinkebyTestNetwork,
     currentAccount,
     connectWallet,
     askContractToMintNft,
