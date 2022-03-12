@@ -11,6 +11,7 @@ export const useApp = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [currentChainId, setCurrentChainId] = useState("");
   const [isRinkebyTestNetwork, setRinkebyTestNetwork] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -70,12 +71,12 @@ export const useApp = () => {
         );
         console.log("Going to pop wallet now to pay gas...");
         let nftTxn = await connectedContract.makeAnEpicNFT();
-        console.log("Mining...please wait.");
+        setInProgress(true);
         await nftTxn.wait();
-        console.log(nftTxn);
         console.log(
           `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
         );
+        setInProgress(false);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -123,6 +124,7 @@ export const useApp = () => {
   }, [currentAccount]);
 
   return {
+    inProgress,
     lastTokenId,
     isRinkebyTestNetwork,
     currentAccount,

@@ -1,6 +1,7 @@
 import React from "react";
 import "./styles/App.css";
 import twitterLogo from "./assets/twitter-logo.svg";
+import { loadingGIf } from "./assets";
 import { useApp } from "./hooks/useApp";
 
 const TWITTER_HANDLE = "yokinist";
@@ -9,6 +10,7 @@ const MINT_LIMIT_COUNT = 100;
 
 const App = () => {
   const {
+    inProgress,
     lastTokenId,
     isRinkebyTestNetwork,
     connectWallet,
@@ -44,6 +46,19 @@ const App = () => {
             </p>
           )}
         </div>
+        {inProgress && (
+          <>
+            <div className="loading-wrapper">
+              <img
+                className="loading-img"
+                src={loadingGIf}
+                alt=""
+                decoding="async"
+              />
+            </div>
+            <p className="loading-text">mining....</p>
+          </>
+        )}
         <p className="sub-text">{`${lastTokenId}/${MINT_LIMIT_COUNT}`}</p>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
