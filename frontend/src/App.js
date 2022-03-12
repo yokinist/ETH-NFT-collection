@@ -4,7 +4,7 @@ import twitterLogo from "./assets/twitter-logo.svg";
 import { loadingGIf } from "./assets";
 import { CONTRACT_ADDRESS, useApp } from "./hooks/useApp";
 
-const TWITTER_HANDLE = "yokinist";
+const TWITTER_HANDLE = "0xYokinist";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const MINT_LIMIT_COUNT = 100;
 
