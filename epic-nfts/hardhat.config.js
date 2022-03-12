@@ -25,4 +25,7 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY],
     },
   },
+  paths: {
+    artifacts: "../frontend/src/libs/hardhat",
+  },
 };

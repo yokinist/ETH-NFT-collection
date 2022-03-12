@@ -2,6 +2,10 @@ yarn.lock
 package-lock.json
 .DS_Store
 
+# compiled contract
+/src/libs/hardhat/*
+!/src/libs/hardhat/contracts
+
 # dependencies
 /node_modules
 
