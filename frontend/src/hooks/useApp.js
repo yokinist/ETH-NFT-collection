@@ -8,37 +8,38 @@ const CONTRACT_ADDRESS = "0x6D8030B8Dd0E53ACd18239d0b641FE2553C7491c";
 
 export const useApp = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const [isNoRinkebyTestNetwork, setRinkebyTestNetwork] = useState(true);
-
-  console.log("currentAccount: ", currentAccount);
+  const [currentChainId, setCurrentChainId] = useState("");
+  const [isRinkebyTestNetwork, setRinkebyTestNetwork] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
+    // initial check
     const chainId = await ethereum.request({ method: "eth_chainId" });
     const isRinkByChainId = chainId === RINKEBY_CHAIN_ID;
-    if (!isRinkByChainId) return;
     setRinkebyTestNetwork(isRinkByChainId);
     if (!ethereum) {
-      console.log("Make sure you have MetaMask!");
+      alert("Make sure you have MetaMask!");
       return;
-    } else {
-      console.log("We have the ethereum object", ethereum);
     }
     const accounts = await ethereum.request({ method: "eth_accounts" });
 
     if (accounts.length !== 0) {
       const account = accounts[0];
-      console.log("Found an authorized account:", account);
       setCurrentAccount(account);
     } else {
-      console.log("No authorized account found");
+      alert("No authorized account found");
     }
   };
+
+  useEffect(() => {
+    if (!currentChainId) return;
+    const isRinkByChainId = currentChainId === RINKEBY_CHAIN_ID;
+    setRinkebyTestNetwork(isRinkByChainId);
+  }, [currentChainId]);
 
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
-
       if (!ethereum) {
         alert("Get MetaMask!");
         return;
@@ -84,6 +85,13 @@ export const useApp = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
+    const { ethereum } = window;
+    if (!ethereum) return;
+    const setChainId = (chainId) => {
+      setCurrentChainId(chainId);
+    };
+    ethereum.on("chainChanged", setChainId);
+    return () => ethereum.off("chainChanged", setChainId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -113,7 +121,7 @@ export const useApp = () => {
   }, [currentAccount]);
 
   return {
-    isNoRinkebyTestNetwork,
+    isRinkebyTestNetwork,
     currentAccount,
     connectWallet,
     askContractToMintNft,

@@ -8,18 +8,19 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
   const {
-    isNoRinkebyTestNetwork,
+    isRinkebyTestNetwork,
     connectWallet,
     currentAccount,
     askContractToMintNft,
   } = useApp();
+
   return (
     <div className="App">
       <div className="container">
         <div className="header-container">
           <p className="header gradient-text">My NFT Collection</p>
           <p className="sub-text">あなただけの特別な NFT を Mint しよう💫</p>
-          {currentAccount === "" && !isNoRinkebyTestNetwork && (
+          {currentAccount === "" && isRinkebyTestNetwork && (
             <button
               onClick={connectWallet}
               className="cta-button connect-wallet-button"
@@ -27,14 +28,15 @@ const App = () => {
               Connect to Wallet
             </button>
           )}
-          {currentAccount !== "" && isNoRinkebyTestNetwork ? (
+          {currentAccount !== "" && isRinkebyTestNetwork && (
             <button
               onClick={askContractToMintNft}
               className="cta-button connect-wallet-button"
             >
               Mint NFT
             </button>
-          ) : (
+          )}
+          {!isRinkebyTestNetwork && (
             <p className="sub-text">
               Rinkeby Test Network に切り替えてください
             </p>
