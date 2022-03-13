@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MyEpicNftABI } from "../libs";
-const MINT_PRICE = 0.001;
-const RINKEBY_CHAIN_ID = "0x4";
-// NOTE: contract デプロイ毎に更新させる
-export const CONTRACT_ADDRESS = "0x37FaE7dF7DF77C78956C9652F7F1bBE2a85e8202";
+import { MINT_PRICE, RINKEBY_CHAIN_ID, CONTRACT_ADDRESS } from "../constants";
 
 export const useApp = () => {
   const [lastTokenId, setLastTokenId] = useState(0);

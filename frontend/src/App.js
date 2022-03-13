@@ -3,10 +3,7 @@ import "./styles/App.css";
 import twitterLogo from "./assets/twitter-logo.svg";
 import { loadingGIf } from "./assets";
 import { CONTRACT_ADDRESS, useApp } from "./hooks/useApp";
-
-const TWITTER_HANDLE = "0xYokinist";
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const MAX_SUPPLY = 100;
+import { TWITTER_HANDLE, TWITTER_LINK, MAX_SUPPLY } from "./constants";
 
 const App = () => {
   const {
