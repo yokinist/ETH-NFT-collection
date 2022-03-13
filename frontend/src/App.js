@@ -17,6 +17,7 @@ const App = () => {
     isRinkebyTestNetwork,
     connectWallet,
     currentAccount,
+    myLatestTokenId,
     askContractToMintNft,
   } = useApp();
 
@@ -25,8 +26,8 @@ const App = () => {
   }, [currentAccount, inProgress, isRinkebyTestNetwork]);
 
   const showOpenSeaLinkCondition = useMemo(() => {
-    return !inProgress && lastTokenId;
-  }, [inProgress, lastTokenId]);
+    return !inProgress && myLatestTokenId;
+  }, [inProgress, myLatestTokenId]);
 
   return (
     <div className="App">
@@ -48,7 +49,7 @@ const App = () => {
             <>
               <div className="desc-container">
                 <a
-                  href={`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${lastTokenId}`}
+                  href={`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${myLatestTokenId}`}
                   target="_blank"
                   rel="noreferrer"
                 >

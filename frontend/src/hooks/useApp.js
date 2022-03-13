@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MyEpicNftABI } from "../libs";
 import { MINT_PRICE, RINKEBY_CHAIN_ID, CONTRACT_ADDRESS } from "../constants";
+import { useLocalStorage } from "./useLocalStorage";
 
 export const useApp = () => {
   const [lastTokenId, setLastTokenId] = useState(0);
@@ -9,6 +10,11 @@ export const useApp = () => {
   const [currentChainId, setCurrentChainId] = useState("");
   const [isRinkebyTestNetwork, setRinkebyTestNetwork] = useState(false);
   const [inProgress, setInProgress] = useState(false);
+  const [myLatestTokenId, setMyLatestTokenId] = useState();
+  const [myLSLatestTokenId, setMyLSLatestTokenId] = useLocalStorage(
+    "myLatestTokenId",
+    myLatestTokenId
+  );
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -86,6 +92,11 @@ export const useApp = () => {
   };
 
   useEffect(() => {
+    if (!myLSLatestTokenId) return;
+    setMyLatestTokenId(myLSLatestTokenId);
+  }, [myLSLatestTokenId]);
+
+  useEffect(() => {
     if (!currentChainId) return;
     const isRinkByChainId = currentChainId === RINKEBY_CHAIN_ID;
     setRinkebyTestNetwork(isRinkByChainId);
@@ -119,15 +130,17 @@ export const useApp = () => {
 
     handleGetLastTokenId(connectedContract);
     // mint 後に emit された NewEpicNFTMinted から値を受け取る
-    // const handleEmitEvent = (_from, _tokenId) => {
-    //   //
-    // };
-    // connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
-    // return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
-  }, [currentAccount, isRinkebyTestNetwork]);
+    const handleEmitEvent = (_from, tokenId) => {
+      setMyLatestTokenId(tokenId.toNumber());
+      setMyLSLatestTokenId(tokenId.toNumber());
+    };
+    connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
+    return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
+  }, [currentAccount, isRinkebyTestNetwork, setMyLSLatestTokenId]);
 
   return {
     inProgress,
+    myLatestTokenId,
     lastTokenId,
     isRinkebyTestNetwork,
     currentAccount,
