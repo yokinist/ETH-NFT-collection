@@ -119,6 +119,9 @@ contract MyEpicNFT is ERC721URIStorage, Ownable {
         console.log(finalTokenUri);
         console.log("--------------------\n");
 
+        // カウンターをインクリメント
+        _tokenIds.increment();
+
         // msg.sender を使って NFT を送信者に Mint
         _safeMint(msg.sender, newItemId);
 
@@ -127,9 +130,6 @@ contract MyEpicNFT is ERC721URIStorage, Ownable {
 
         // NFT がいつ誰に作成されたかを確認
         console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
-
-        // 次の NFT が Mint されるときのカウンターをインクリメント
-        _tokenIds.increment();
 
         // emit for recieve valus from frontend
         emit NewEpicNFTMinted(msg.sender, newItemId);

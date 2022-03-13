@@ -1,8 +1,6 @@
 const main = async () => {
   const nftContractFactory = await hre.ethers.getContractFactory("MyEpicNFT");
-  const nftContract = await nftContractFactory.deploy({
-    value: hre.ethers.utils.parseEther("0.003"),
-  });
+  const nftContract = await nftContractFactory.deploy();
   await nftContract.deployed();
   console.log("Contract deployed to:", nftContract.address);
   // makeAnEpicNFT 関数を呼び出す。NFT が Mint される。
