@@ -1,19 +1,21 @@
 .App {
   height: 100vh;
-  background-color: #0d1116;
+  background-color: #d7cf3a;
   overflow: scroll;
   text-align: center;
 }
 
 .container {
-  height: 100%;
-  background-color: #0d1116;
+  height: 80%;
+  width: 100%;
+  background-color: #d7cf3a;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .header-container {
-  padding-top: 30px;
+  padding-top: 0px;
 }
 
 .header {
@@ -23,8 +25,17 @@
 }
 
 .sub-text {
-  font-size: 25px;
-  color: white;
+  font-size: 24px;
+  color: black;
+  margin-bottom: 28px;
+}
+
+.progress {
+  display: block;
+  background-color: #000000;
+  margin-bottom: 12px;
+  text-align: right;
+  padding-right: 8px;
 }
 
 .gradient-text {
@@ -44,7 +55,7 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 .connect-wallet-button {
@@ -65,16 +76,20 @@
 }
 
 .mint-count {
-  color: white;
+  color: black;
   font-size: 18px;
   font-weight: bold;
 }
 
 .footer-container {
+  padding-bottom: 24px;
+  margin-top: auto;
+}
+
+.twitter-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 30px;
 }
 
 .twitter-logo {
@@ -83,7 +98,7 @@
 }
 
 .footer-text {
-  color: white;
+  color: black;
   font-size: 16px;
   font-weight: bold;
 }
@@ -102,8 +117,16 @@
   border-radius: 100%;
 }
 
+.heading-text {
+  font-weight: bold;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
 .loading-text {
-  color: white;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .desc-container {
@@ -113,7 +136,7 @@
 }
 
 .desc-text {
-  color: white;
+  color: black;
 }
 
 /* KeyFrames */

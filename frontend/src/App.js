@@ -32,9 +32,11 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
-          <p className="sub-text">あなただけの特別な NFT を Mint しよう💫</p>
-          {currentAccount === "" && isRinkebyTestNetwork && (
+          <h2 className="header heading-text">Crypto Jiro</h2>
+          <p className="sub-text">
+            【限定100杯】ボタンを押して二郎のコールを NFT にしてみよう
+          </p>
+          {!!(currentAccount === "" && isRinkebyTestNetwork) && (
             <button
               onClick={connectWallet}
               className="cta-button connect-wallet-button"
@@ -42,34 +44,32 @@ const App = () => {
               Connect to Wallet
             </button>
           )}
-          {showOpenSeaLinkCondition && (
+          {!!showOpenSeaLinkCondition && (
             <>
               <div className="desc-container">
-                <p className="desc-text">
-                  あなたのウォレットに NFT を送信しました。
-                  <br />
-                  OpenSea に表示されるまで最大で10分かかることがあります。
-                </p>
                 <a
                   href={`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${lastTokenId}`}
                   target="_blank"
                   rel="noreferrer"
                 >
                   <button className="cta-button connect-wallet-button">
-                    OpenSea で見る
+                    ミントした二郎コール NFT を見にいく
                   </button>
                 </a>
               </div>
               <p className="desc-text"> - or -</p>
             </>
           )}
-          {showMintCondition && (
-            <button
-              onClick={askContractToMintNft}
-              className="cta-button connect-wallet-button"
-            >
-              {showOpenSeaLinkCondition ? "Mint NFT more" : "Mint NFT"}
-            </button>
+          {!!showMintCondition && (
+            <>
+              <p className="desc-text">今すぐ 0.001 ETH で</p>
+              <button
+                onClick={askContractToMintNft}
+                className="cta-button connect-wallet-button"
+              >
+                {showOpenSeaLinkCondition ? "もう一杯おかわり" : "コールする"}
+              </button>
+            </>
           )}
           {!isRinkebyTestNetwork && (
             <p className="sub-text">
@@ -87,13 +87,20 @@ const App = () => {
                 decoding="async"
               />
             </div>
-            <p className="loading-text">mining....</p>
+            <p className="loading-text">調理中...</p>
           </>
         )}
-        <p className="sub-text">{`${
-          lastTokenId === 0 ? "x" : lastTokenId
-        }/${MAX_SUPPLY}`}</p>
-        <div className="footer-container">
+      </div>
+      <div className="footer-container">
+        <div className="progress-container">
+          <p className="sub-text">{`${
+            lastTokenId === 0 ? "x" : lastTokenId
+          }/${MAX_SUPPLY}`}</p>
+          <div className="progress" style={{ width: `${lastTokenId}%` }}>
+            🍜
+          </div>
+        </div>
+        <div className="twitter-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
           <a
             className="footer-text"
