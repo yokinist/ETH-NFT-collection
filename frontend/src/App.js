@@ -2,8 +2,13 @@ import React, { useMemo } from "react";
 import "./styles/App.css";
 import twitterLogo from "./assets/twitter-logo.svg";
 import { loadingGIf } from "./assets";
-import { CONTRACT_ADDRESS, useApp } from "./hooks/useApp";
-import { TWITTER_HANDLE, TWITTER_LINK, MAX_SUPPLY } from "./constants";
+import { useApp } from "./hooks/useApp";
+import {
+  CONTRACT_ADDRESS,
+  TWITTER_HANDLE,
+  TWITTER_LINK,
+  MAX_SUPPLY,
+} from "./constants";
 
 const App = () => {
   const {
