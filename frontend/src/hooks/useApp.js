@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MyEpicNftABI } from "../libs";
 const MINT_PRICE = 0.001;
-const MAX_MINT = 10;
 const RINKEBY_CHAIN_ID = "0x4";
 // NOTE: contract デプロイ毎に更新させる
-export const CONTRACT_ADDRESS = "0x888b78220a5C7e52C8ec2aeFc734981F84BAA793";
+export const CONTRACT_ADDRESS = "0x37FaE7dF7DF77C78956C9652F7F1bBE2a85e8202";
 
 export const useApp = () => {
   const [lastTokenId, setLastTokenId] = useState(0);
@@ -65,7 +64,9 @@ export const useApp = () => {
           signer
         );
         console.log("Going to pop wallet now to pay gas...");
-        let nftTxn = await connectedContract.makeAnEpicNFT();
+        let nftTxn = await connectedContract.makeAnEpicNFT({
+          value: ethers.utils.parseEther(MINT_PRICE),
+        });
         setInProgress(true);
         await nftTxn.wait();
         console.log(

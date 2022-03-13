@@ -6,7 +6,7 @@ import { CONTRACT_ADDRESS, useApp } from "./hooks/useApp";
 
 const TWITTER_HANDLE = "0xYokinist";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const MINT_LIMIT_COUNT = 100;
+const MAX_SUPPLY = 100;
 
 const App = () => {
   const {
@@ -90,7 +90,7 @@ const App = () => {
         )}
         <p className="sub-text">{`${
           lastTokenId === 0 ? "x" : lastTokenId
-        }/${MINT_LIMIT_COUNT}`}</p>
+        }/${MAX_SUPPLY}`}</p>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
           <a

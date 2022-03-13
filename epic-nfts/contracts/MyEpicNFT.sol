@@ -5,20 +5,25 @@ pragma solidity 0.8.4;
 
 
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
 
 import { Base64 } from "./libraries/Base64.sol";
 
-contract MyEpicNFT is ERC721URIStorage {
+contract MyEpicNFT is ERC721URIStorage, Ownable {
+    using SafeMath for uint256;
     using Counters for Counters.Counter;
     // _tokenIdsを初期化（_tokenIds = 0）: 状態変数として保持
     Counters.Counter private _tokenIds;
 
-    uint8 limit = 100; // mint の上限
+    uint public constant MAX_SUPPLY = 100;
+    uint public constant PRICE = 0.001 ether;
+    uint public constant MAX_PER_MINT = 3;
+
     string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
 
     string[] firstWords = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -27,7 +32,7 @@ contract MyEpicNFT is ERC721URIStorage {
 
     event NewEpicNFTMinted(address sender, uint256 tokenId);
 
-    constructor() ERC721 ("SquareNFT", "SQUARE") {
+    constructor() ERC721 ("3-Numbers", "NUMBER") payable {
         console.log("This is my NFT contract.");
     }
 
@@ -62,11 +67,21 @@ contract MyEpicNFT is ERC721URIStorage {
         return lastTokenId;
     }
 
-    // mint
-    function makeAnEpicNFT() public {
-        uint256 newItemId = _tokenIds.current();
-        if (limit < newItemId) return;
+    function withdraw() public payable onlyOwner {
+        uint balance = address(this).balance;
+        require(balance > 0, "No ether left to withdraw");
 
+        (bool success, ) = (msg.sender).call{value: balance}("");
+        require(success, "Transfer failed.");
+    }
+
+    // mint
+    function makeAnEpicNFT() public payable {
+        uint256 newItemId = _tokenIds.current();
+        if (MAX_SUPPLY < newItemId) return;
+        require(
+            msg.value >= PRICE,"Not enough ether to purchase NFTs."
+        );
         // 3つの配列からそれぞれ1つの単語をランダムに取り出す
         string memory first = pickRandomFirstWord(newItemId);
         string memory second = pickRandomSecondWord(newItemId);
