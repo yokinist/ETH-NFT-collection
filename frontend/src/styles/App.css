@@ -109,6 +109,7 @@
 .desc-container {
   display: flex;
   flex-flow: column;
+  margin-bottom: 18px;
 }
 
 .desc-text {

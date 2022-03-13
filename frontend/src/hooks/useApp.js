@@ -65,9 +65,7 @@ export const useApp = () => {
           signer
         );
         console.log("Going to pop wallet now to pay gas...");
-        let nftTxn = await connectedContract.makeAnEpicNFT({
-          value: ethers.utils.parseEther(MINT_PRICE).toString(),
-        });
+        let nftTxn = await connectedContract.makeAnEpicNFT();
         setInProgress(true);
         await nftTxn.wait();
         console.log(

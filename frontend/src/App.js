@@ -40,12 +40,33 @@ const App = () => {
               Connect to Wallet
             </button>
           )}
-          {showMintCondition && !showOpenSeaLinkCondition && (
+          {showOpenSeaLinkCondition && (
+            <>
+              <div className="desc-container">
+                <p className="desc-text">
+                  あなたのウォレットに NFT を送信しました。
+                  <br />
+                  OpenSea に表示されるまで最大で10分かかることがあります。
+                </p>
+                <a
+                  href={`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${lastTokenId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <button className="cta-button connect-wallet-button">
+                    OpenSea で見る
+                  </button>
+                </a>
+              </div>
+              <p className="desc-text"> - or -</p>
+            </>
+          )}
+          {showMintCondition && (
             <button
               onClick={askContractToMintNft}
               className="cta-button connect-wallet-button"
             >
-              Mint NFT
+              {showOpenSeaLinkCondition ? "Mint NFT more" : "Mint NFT"}
             </button>
           )}
           {!isRinkebyTestNetwork && (
@@ -66,24 +87,6 @@ const App = () => {
             </div>
             <p className="loading-text">mining....</p>
           </>
-        )}
-        {showOpenSeaLinkCondition && (
-          <div className="desc-container">
-            <p className="desc-text">
-              あなたのウォレットに NFT を送信しました。
-              <br />
-              OpenSea に表示されるまで最大で10分かかることがあります。
-            </p>
-            <a
-              href={`https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${lastTokenId}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <button className="cta-button connect-wallet-button">
-                OpenSea で見る
-              </button>
-            </a>
-          </div>
         )}
         <p className="sub-text">{`${
           lastTokenId === 0 ? "x" : lastTokenId
