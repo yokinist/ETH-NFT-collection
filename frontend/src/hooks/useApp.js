@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MyEpicNftABI } from "../libs";
-
+const MINT_PRICE = 0.001;
+const MAX_MINT = 10;
 const RINKEBY_CHAIN_ID = "0x4";
 // NOTE: contract デプロイ毎に更新させる
-export const CONTRACT_ADDRESS = "0x41c13254Af8568C3Fe1c1B94B1986f2a3dB25ce7";
+export const CONTRACT_ADDRESS = "0x888b78220a5C7e52C8ec2aeFc734981F84BAA793";
 
 export const useApp = () => {
   const [lastTokenId, setLastTokenId] = useState(0);
@@ -70,11 +71,13 @@ export const useApp = () => {
           signer
         );
         console.log("Going to pop wallet now to pay gas...");
-        let nftTxn = await connectedContract.makeAnEpicNFT();
+        let nftTxn = await connectedContract.makeAnEpicNFT({
+          value: ethers.utils.parseEther(MINT_PRICE).toString(),
+        });
         setInProgress(true);
         await nftTxn.wait();
         console.log(
-          `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+          `Mined, see transaction: https://rinkeby.etherscmian.io/tx/${nftTxn.hash}`
         );
         setInProgress(false);
       } else {
@@ -83,6 +86,12 @@ export const useApp = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleGetLastTokenId = async (connectedContract) => {
+    const id = await connectedContract.getLastTokenId();
+    if (!id) return;
+    setLastTokenId(id.toNumber());
   };
 
   useEffect(() => {
@@ -110,7 +119,7 @@ export const useApp = () => {
     );
 
     if (!connectedContract) return;
-
+    handleGetLastTokenId(connectedContract);
     // mint 後に emit された NewEpicNFTMinted から値を受け取る
     const handleEmitEvent = (_from, tokenId) => {
       setLastTokenId(tokenId.toNumber());

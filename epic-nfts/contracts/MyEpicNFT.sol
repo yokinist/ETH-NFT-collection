@@ -57,7 +57,12 @@ contract MyEpicNFT is ERC721URIStorage {
     return thirdWords[rand];
   }
 
-// mint
+  function getLastTokenId() public view returns (uint256) {
+    uint256 lastTokenId = _tokenIds.current();
+    return lastTokenId;
+  }
+
+  // mint
   function makeAnEpicNFT() public {
     uint256 newItemId = _tokenIds.current();
     if (limit < newItemId) return;
