@@ -69,6 +69,7 @@ export const useApp = () => {
         console.log(
           `Mined, see transaction: https://rinkeby.etherscmian.io/tx/${nftTxn.hash}`
         );
+        setLastTokenId((prevLastTokenId) => prevLastTokenId + 1);
         setInProgress(false);
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -81,7 +82,7 @@ export const useApp = () => {
   const handleGetLastTokenId = async (connectedContract) => {
     const id = await connectedContract.getLastTokenId();
     if (!id) return;
-    setLastTokenId(id.toNumber());
+    setLastTokenId(id.toNumber() - 1);
   };
 
   useEffect(() => {
@@ -118,11 +119,11 @@ export const useApp = () => {
 
     handleGetLastTokenId(connectedContract);
     // mint 後に emit された NewEpicNFTMinted から値を受け取る
-    const handleEmitEvent = (_from, tokenId) => {
-      setLastTokenId(tokenId.toNumber());
-    };
-    connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
-    return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
+    // const handleEmitEvent = (_from, _tokenId) => {
+    //   //
+    // };
+    // connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
+    // return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
   }, [currentAccount, isRinkebyTestNetwork]);
 
   return {
