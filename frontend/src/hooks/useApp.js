@@ -34,12 +34,6 @@ export const useApp = () => {
     }
   };
 
-  useEffect(() => {
-    if (!currentChainId) return;
-    const isRinkByChainId = currentChainId === RINKEBY_CHAIN_ID;
-    setRinkebyTestNetwork(isRinkByChainId);
-  }, [currentChainId]);
-
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -95,6 +89,12 @@ export const useApp = () => {
   };
 
   useEffect(() => {
+    if (!currentChainId) return;
+    const isRinkByChainId = currentChainId === RINKEBY_CHAIN_ID;
+    setRinkebyTestNetwork(isRinkByChainId);
+  }, [currentChainId]);
+
+  useEffect(() => {
     checkIfWalletIsConnected();
     const { ethereum } = window;
     if (!ethereum) return;
@@ -118,7 +118,8 @@ export const useApp = () => {
       signer
     );
 
-    if (!connectedContract) return;
+    if (!connectedContract || !isRinkebyTestNetwork) return;
+
     handleGetLastTokenId(connectedContract);
     // mint 後に emit された NewEpicNFTMinted から値を受け取る
     const handleEmitEvent = (_from, tokenId) => {
@@ -126,7 +127,7 @@ export const useApp = () => {
     };
     connectedContract.on("NewEpicNFTMinted", handleEmitEvent);
     return () => connectedContract.off("NewEpicNFTMinted", handleEmitEvent);
-  }, [currentAccount]);
+  }, [currentAccount, isRinkebyTestNetwork]);
 
   return {
     inProgress,
