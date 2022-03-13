@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+
 import "hardhat/console.sol";
 
 
@@ -23,16 +24,15 @@ contract MyEpicNFT is ERC721URIStorage, Ownable {
     uint public constant MAX_SUPPLY = 100;
     uint public constant PRICE = 0.001 ether;
     uint public constant MAX_PER_MINT = 3;
+    string public constant baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='#d7cf3a'/><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
 
-    string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
-
-    string[] firstWords = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    string[] secondWords = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    string[] thirdWords = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    string[] firstWords = [unicode"小 - ", unicode"大 - ", unicode"小・麺少なめ - ", unicode"小・カタメ - ", unicode"大・カタメ - ", unicode"小・豚マシ - ", unicode"小・豚Wマシ - ", unicode"大・豚マシ - ", unicode"大・豚Wマシ - "];
+    string[] secondWords = [unicode"アブラ - ", unicode"ヤサイ - ", unicode"カラメ - ", unicode"ニンニク - ", unicode"全部 - "];
+    string[] thirdWords = [unicode"少なめ", unicode"マシ", unicode"マシマシ"];
 
     event NewEpicNFTMinted(address sender, uint256 tokenId);
 
-    constructor() ERC721 ("3-Numbers", "NUMBER") payable {
+    constructor() ERC721 ("Crypto Jiros", "JIRO") payable {
         console.log("This is my NFT contract.");
     }
 
@@ -78,10 +78,12 @@ contract MyEpicNFT is ERC721URIStorage, Ownable {
     // mint
     function makeAnEpicNFT() public payable {
         uint256 newItemId = _tokenIds.current();
+
         if (MAX_SUPPLY < newItemId) return;
         require(
             msg.value >= PRICE,"Not enough ether to purchase NFTs."
         );
+
         // 3つの配列からそれぞれ1つの単語をランダムに取り出す
         string memory first = pickRandomFirstWord(newItemId);
         string memory second = pickRandomSecondWord(newItemId);
@@ -103,7 +105,7 @@ contract MyEpicNFT is ERC721URIStorage, Ownable {
                     abi.encodePacked(
                         '{"name": "',
                         combinedWord,
-                        '", "description": "A highly acclaimed collection of squares.", "image": "data:image/svg+xml;base64,',
+                        '", "description": "This is Crypto Jiro", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(finalSvg)),
                         '"}'
                     )
